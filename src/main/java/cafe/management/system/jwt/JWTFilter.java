@@ -1,7 +1,6 @@
 package cafe.management.system.jwt;
 
 import cafe.management.system.constant.CafeManagementSystemConstant;
-import cafe.management.system.util.CafeManagementSystemUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,13 +35,14 @@ public class JWTFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		log.info("doInternalFilter called for URI: {}", request.getRequestURI());
 
-		if (request.getServletPath().matches("/user/login|/user/forgotPassword")) {
+		if (request.getServletPath().matches("/user/login|/user/signup|/user/forgotPassword")) {
 			filterChain.doFilter(request, response);
 		} else {
 			try {
 				String token = jwtUtil.getJwtFromHeader(request);
 
-				if (token != null) {
+				if (!Objects.isNull(token)) {
+					log.info("JWT found in header: {}", token);
 					username = jwtUtil.extractUsername(token);
 					claims = jwtUtil.extractAllClaims(token);
 				}

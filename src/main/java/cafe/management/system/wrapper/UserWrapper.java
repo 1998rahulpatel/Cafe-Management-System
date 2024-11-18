@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserWrapper {
-
     private Integer id;
     private String name;
     private String email;

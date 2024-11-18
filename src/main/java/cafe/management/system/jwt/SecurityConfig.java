@@ -1,6 +1,5 @@
 package cafe.management.system.jwt;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.client.HttpClientErrorException;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -31,7 +29,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/user/login", "/user/forgotPassword").permitAll()
+						auth -> auth.requestMatchers("/user/login", "/user/signup", "/user/forgotPassword").permitAll()
 								.anyRequest().authenticated())
 				.exceptionHandling(exceptions -> exceptions
 						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.FORBIDDEN))
@@ -40,8 +38,8 @@ public class SecurityConfig {
 						}))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()))
-				.formLogin(withDefaults());
-		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+				.formLogin(withDefaults())
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 

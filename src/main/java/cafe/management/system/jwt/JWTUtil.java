@@ -1,14 +1,13 @@
 package cafe.management.system.jwt;
 
-import cafe.management.system.constant.CafeManagementSystemConstant;
-import cafe.management.system.util.CafeManagementSystemUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +22,37 @@ import java.util.function.Function;
 @Service
 public class JWTUtil {
 
-	private final SecretKey secretKey = Keys.hmacShaKeyFor("cafemangementsystemcafemangementsystemcafemangementsystemcafemangementsystem".getBytes());
-	private final Integer tokenExpirationInMS = 1000 * 60 * 60 * 1;
+	@Value("${jwtSecretKey}")
+	private String jwtSecretKey;
+	@Value("${jwtExpirationInHS}")
+	private Long jwtExpirationInHS;
+	private SecretKey secretKey;
+	private long tokenExpirationInMS;
+
+	@PostConstruct
+	public void init() {
+		// Initialize the SecretKey in a @PostConstruct method
+		secretKey = Keys.hmacShaKeyFor(jwtSecretKey.getBytes());
+		tokenExpirationInMS = 1000 * 60 * 60 * jwtExpirationInHS;
+		log.info("JWT SecretKey and ExpirationTime initialized successfully.");
+	}
+
+
 
 	public String getJwtFromHeader(HttpServletRequest request) {
 		String authorizationHeader = request.getHeader("Authorization");
-		String token = authorizationHeader != null && authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7).trim() : null;
-		log.info("Extracted JWT: {}", token);
-		if (Objects.isNull(token)){
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+			return authorizationHeader.substring(7).trim();
+		} else {
 			log.error("Authorization header is missing or does not start with Bearer.");
+			return null;
 		}
-		return token;
 	}
 
 	public Claims extractAllClaims(String token) {
+		if (!Objects.isNull(token)) {
+			log.debug("Extracting all claims from token: {}", token);
+		}
 		return Jwts.parserBuilder()
 				.setSigningKey(secretKey)
 				.build()
@@ -57,11 +73,11 @@ public class JWTUtil {
 		return extractClaims(token, Claims::getExpiration);
 	}
 
-	private Boolean isTokenExpired(String token) {
+	private boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
 
-	public Boolean validateToken(String token, UserDetails userDetails) {
+	public boolean validateToken(String token, UserDetails userDetails) {
 		final String username = extractUsername(token);
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 	}
@@ -70,7 +86,7 @@ public class JWTUtil {
 		return Jwts.builder()
 				.setClaims(claims)
 				.setSubject(username)
-				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + tokenExpirationInMS))
 				.signWith(secretKey, SignatureAlgorithm.HS256)
 				.compact();

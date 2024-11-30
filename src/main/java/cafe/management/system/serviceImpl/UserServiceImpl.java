@@ -1,4 +1,4 @@
-package cafe.management.system.serviceImp;
+package cafe.management.system.serviceImpl;
 
 import cafe.management.system.constant.CafeManagementSystemConstant;
 import cafe.management.system.dao.UserDao;
@@ -13,7 +13,6 @@ import cafe.management.system.util.PasswordGenerator;
 import cafe.management.system.util.PasswordValidator;
 import cafe.management.system.wrapper.UserWrapper;
 import com.google.common.base.Strings;
-import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

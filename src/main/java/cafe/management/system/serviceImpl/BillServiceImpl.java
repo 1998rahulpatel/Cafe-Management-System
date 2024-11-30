@@ -1,4 +1,4 @@
-package cafe.management.system.serviceImp;
+package cafe.management.system.serviceImpl;
 
 import cafe.management.system.constant.CafeManagementSystemConstant;
 import cafe.management.system.dao.BillDao;

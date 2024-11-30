@@ -29,7 +29,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/user/login", "/user/signup", "/user/forgotPassword").permitAll()
+						auth -> auth.requestMatchers("/user/login", "/user/signup", "/user/forgotPassword", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
 								.anyRequest().authenticated())
 				.exceptionHandling(exceptions -> exceptions
 						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.FORBIDDEN))

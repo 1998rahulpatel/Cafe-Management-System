@@ -35,7 +35,7 @@ public class JWTFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		log.info("doInternalFilter called for URI: {}", request.getRequestURI());
 
-		if (request.getServletPath().matches("/user/login|/user/signup|/user/forgotPassword")) {
+		if (request.getServletPath().matches("/user/login|/user/signup|/user/forgotPassword|/swagger-ui/.*|/v3/api-docs.*|/swagger-resources/.*|/webjars/.*")) {
 			filterChain.doFilter(request, response);
 		} else {
 			try {

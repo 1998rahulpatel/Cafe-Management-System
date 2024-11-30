@@ -115,8 +115,8 @@ public class UserServiceImpl implements UserService {
 
 			if (auth.isAuthenticated()) {
 				if (customUsersDetailsService.getUserDetails().getStatus().equalsIgnoreCase("true")) {
-					String token = jwtUtil.generateToken(customUsersDetailsService.getUserDetails().getEmail(),
-							customUsersDetailsService.getUserDetails().getRole());
+					jwtUtil.revokeAllTokensByUser(customUsersDetailsService.getUserDetails());
+					String token = jwtUtil.generateTokenAndStoreInDB(customUsersDetailsService.getUserDetails());
 					log.info("Generated JWT token for user {}", requestMap.get("email"));
 					return new ResponseEntity<>(String.format("{\"token\":\"%s\"}", token), HttpStatus.OK);
 				} else {

@@ -1,6 +1,5 @@
 package cafe.management.system.controller;
 
-import cafe.management.system.model.Product;
 import cafe.management.system.wrapper.ProductWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

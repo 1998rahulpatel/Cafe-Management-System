@@ -3,14 +3,12 @@ package cafe.management.system.controllerImpl;
 import cafe.management.system.constant.CafeManagementSystemConstant;
 import cafe.management.system.controller.ProductController;
 import cafe.management.system.jwt.JWTFilter;
-import cafe.management.system.model.Product;
 import cafe.management.system.service.ProductService;
 import cafe.management.system.util.CafeManagementSystemUtil;
 import cafe.management.system.wrapper.ProductWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;

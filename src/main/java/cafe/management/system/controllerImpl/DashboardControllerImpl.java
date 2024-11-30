@@ -1,9 +1,7 @@
 package cafe.management.system.controllerImpl;
 
-import cafe.management.system.constant.CafeManagementSystemConstant;
 import cafe.management.system.controller.DashboardController;
 import cafe.management.system.service.DashboardService;
-import cafe.management.system.util.CafeManagementSystemUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

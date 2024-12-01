@@ -34,8 +34,8 @@ public class JWTUtil {
 
 	@Value("${jwtSecretKey}")
 	private String jwtSecretKey;
-	@Value("${jwtExpirationInHS}")
-	private Long jwtExpirationInHS;
+	@Value("${jwtExpirationInMinutes}")
+	private Long jwtExpirationInMinutes;
 	private SecretKey secretKey;
 	private long tokenExpirationInMS;
 
@@ -45,7 +45,7 @@ public class JWTUtil {
 			throw new IllegalArgumentException("JWT secret key must be at least 32 characters long.");
 		}
 		this.secretKey = Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
-		tokenExpirationInMS = 1000 * 60 * 60 * jwtExpirationInHS;
+		tokenExpirationInMS = 1000 * 60 * jwtExpirationInMinutes;
 		log.info("JWT SecretKey and ExpirationTime initialized successfully.");
 	}
 

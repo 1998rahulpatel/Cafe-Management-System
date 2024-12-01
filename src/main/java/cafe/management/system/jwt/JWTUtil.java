@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import cafe.management.system.dao.TokenDao;
 import cafe.management.system.model.Token;
 import cafe.management.system.model.User;
@@ -101,7 +103,7 @@ public class JWTUtil {
 				.compact();
 	}
 
-	public String generateToken(String username, String role) {
+	private String generateToken(String username, String role) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("role", role);
 		return createToken(claims, username);
@@ -119,10 +121,19 @@ public class JWTUtil {
 
 	public void revokeAllTokensByUser(User user) {
 		List<Token> validTokenListByUser = this.tokenDao.findAllTokensByUser(user.getId());
-		
 		if (validTokenListByUser != null && !validTokenListByUser.isEmpty()) {
 			validTokenListByUser.forEach(token -> token.setIsLoggedOut(true));
 			this.tokenDao.saveAll(validTokenListByUser);
 		}
+		List<Token> inActiveTokenListByUser = this.tokenDao.findAllInActiveTokensByUser(user.getId());
+		if (inActiveTokenListByUser != null && !inActiveTokenListByUser.isEmpty()) {
+			inActiveTokenListByUser.forEach(token -> {
+				Token t = this.tokenDao.findByToken(token.getToken()).orElse(null);
+				if (t.getIsLoggedOut()) {
+					this.tokenDao.deleteById(t.getId());
+				}
+			});
+		}
 	}
+	
 }
